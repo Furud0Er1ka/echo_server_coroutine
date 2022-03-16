@@ -176,9 +176,11 @@ struct connection_task {
             return connection_task { Handle::from_promise( *this ) };
         }
         std::suspend_always initial_suspend() noexcept {
+            std::cout << "initial_suspend called\n";
             return {};
         }
         std::suspend_never final_suspend() noexcept {
+            std::cout << "final_suspend called\n";
             return {};
         }
         void return_void() noexcept { }
@@ -193,9 +195,9 @@ struct connection_task {
     void destroy() {
         handler.destroy();
     }
-    connection_task( const connection_task & ) = delete;
-    connection_task &operator=( const connection_task & ) = delete;
-    connection_task( connection_task &&t ) noexcept : handler( t.handler ) {
+    connection_task( const connection_task & ) = default;
+    connection_task &operator=( const connection_task & ) = default;
+    /*connection_task( connection_task &&t ) noexcept : handler( t.handler ) {
         t.handler = {};
     }
     connection_task &operator=( connection_task &&t ) noexcept {
@@ -204,7 +206,9 @@ struct connection_task {
         handler = t.handler;
         t.handler = {};
         return *this;
-    }
+    }*/
+    connection_task( connection_task &&t ) = default;
+    connection_task &operator=( connection_task &&t ) = default;
 };
 
 auto read( size_t message_size, unsigned flags ) {
